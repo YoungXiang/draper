@@ -1,0 +1,156 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		0B7E60A71AF8637B005E80E3 /* .DS_Store */ = {isa = PBXFileReference; lastKnownFileType = file; path = .DS_Store; sourceTree = "<group>"; };
+		0B7E60A81AF8637B005E80E3 /* clean_wc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = clean_wc.sh; sourceTree = "<group>"; };
+		0B7E60A91AF8637B005E80E3 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		0B7E60AA1AF8637B005E80E3 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
+		0B7E60AB1AF8637B005E80E3 /* make_with_mingw.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = make_with_mingw.bat; sourceTree = "<group>"; };
+		0B7E60AC1AF8637B005E80E3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		0B7E60AD1AF8637B005E80E3 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		0B7E60AE1AF8637B005E80E3 /* test_glut */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test_glut; sourceTree = "<group>"; };
+		0B7E60AF1AF8637B005E80E3 /* test_glut_lowlev */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test_glut_lowlev; sourceTree = "<group>"; };
+		0B7E60B01AF8637B005E80E3 /* test_qt */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test_qt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0B7E60A11AF8637B005E80E3 = {
+			isa = PBXGroup;
+			children = (
+				0B7E60A71AF8637B005E80E3 /* .DS_Store */,
+				0B7E60A81AF8637B005E80E3 /* clean_wc.sh */,
+				0B7E60A91AF8637B005E80E3 /* include */,
+				0B7E60AA1AF8637B005E80E3 /* lib */,
+				0B7E60AB1AF8637B005E80E3 /* make_with_mingw.bat */,
+				0B7E60AC1AF8637B005E80E3 /* Makefile */,
+				0B7E60AD1AF8637B005E80E3 /* src */,
+				0B7E60AE1AF8637B005E80E3 /* test_glut */,
+				0B7E60AF1AF8637B005E80E3 /* test_glut_lowlev */,
+				0B7E60B01AF8637B005E80E3 /* test_qt */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		0B7E60A61AF8637B005E80E3 /* DelFEM */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 0B7E60B11AF8637B005E80E3 /* Build configuration list for PBXLegacyTarget "DelFEM" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/davidchun/Downloads/sc_src/DelFEM;
+			dependencies = (
+			);
+			name = DelFEM;
+			passBuildSettingsInEnvironment = 1;
+			productName = DelFEM;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		0B7E60A21AF8637B005E80E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 0B7E60A51AF8637B005E80E3 /* Build configuration list for PBXProject "DelFEM" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0B7E60A11AF8637B005E80E3;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0B7E60A61AF8637B005E80E3 /* DelFEM */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		0B7E60A31AF8637B005E80E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		0B7E60A41AF8637B005E80E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		0B7E60B21AF8637B005E80E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = DelFEM;
+			};
+			name = Debug;
+		};
+		0B7E60B31AF8637B005E80E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = DelFEM;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0B7E60A51AF8637B005E80E3 /* Build configuration list for PBXProject "DelFEM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B7E60A31AF8637B005E80E3 /* Debug */,
+				0B7E60A41AF8637B005E80E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0B7E60B11AF8637B005E80E3 /* Build configuration list for PBXLegacyTarget "DelFEM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B7E60B21AF8637B005E80E3 /* Debug */,
+				0B7E60B31AF8637B005E80E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0B7E60A21AF8637B005E80E3 /* Project object */;
+}
