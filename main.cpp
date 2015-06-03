@@ -35,7 +35,7 @@
 #include "analysis2d_cloth_static.h"
 #include "designer2d_cloth.h"
 
-double mov_begin_x, mov_begin_y;	// ÉJÅ[É\Éãà íuÇÃê≥ãKç¿ïW
+double mov_begin_x, mov_begin_y;	
 int imodifier;
 
 bool is_lighting = true;
@@ -56,7 +56,7 @@ int imenu_right_click;
 // 3:smooth
 // 4:slider 0
 // 5:dart_cut not sew
-unsigned int imode_ope = 0;
+unsigned int imode_ope = 0; // mouse events mode in design windows 
 int islider_active = -1;
 std::string slider_name;
 bool is_active_slider = false;
@@ -72,6 +72,7 @@ unsigned int m_texName = 0;
 bool is_display_rotation = false;
 double display_rotation_theta = 0;
 
+// Render string in windows
 void RenderBitmapString(float x, float y, void *font,char *string)
 {
   char *c;
@@ -81,16 +82,19 @@ void RenderBitmapString(float x, float y, void *font,char *string)
   }
 }
 
+// Show the text in design window
 void ShowTextDesign()
 {
   const bool is_lighting = glIsEnabled(GL_LIGHTING);  
 	int* pFont=(int*)GLUT_BITMAP_8_BY_13;
 
+  // Design viewport for text area
 	GLint viewport[4];
 	::glGetIntegerv(GL_VIEWPORT,viewport);
 	const int win_w = viewport[2];
 	const int win_h = viewport[3];
 
+  // Set up the view
 	::glMatrixMode(GL_PROJECTION);
 	::glPushMatrix();
 	::glLoadIdentity();
@@ -101,12 +105,14 @@ void ShowTextDesign()
 	::glScalef(1, -1, 1);
 	::glTranslatef(0, -win_h, 0);
   ::glDisable(GL_LIGHTING);
-//	::glDisable(GL_DEPTH_TEST);
+  //::glDisable(GL_DEPTH_TEST);
   // 0:drag
   // 1:dart cut
   // 2:curve_edit
   // 3:smooth
   // 4:slider 0  
+  
+  // Define the instructions
 	char s_tmp[256];  
   {
     strcpy(s_tmp,"Press \' \' button to try different 3D model");
@@ -135,12 +141,14 @@ void ShowTextDesign()
     ::glColor3d(0.0, 0.0, 1.0);
     RenderBitmapString(10,60, pFont, s_tmp);            
   } 
-  if(      imode_ope == 0 ){ strcpy(s_tmp,"Tool : Drag"); }
+  if(      imode_ope == 0 ){ strcpy(s_tmp, "Tool : Drag"); }
   else if( imode_ope == 1 ){ strcpy(s_tmp, "Tool : Dart Cutter"); }
   else if( imode_ope == 2 ){ strcpy(s_tmp, "Tool : Curve Edit"); }  
   else if( imode_ope == 3 ){ strcpy(s_tmp, "Tool : Smooth"); }    
   else if( imode_ope == 4 ){ strcpy(s_tmp, "Tool : Slider"); }      
   else if( imode_ope == 5 ){ strcpy(s_tmp, "Tool : Hole"); }        
+
+  // Set color and render instructions
 	::glColor3d(1.0, 0.0, 0.0);  
 	RenderBitmapString(10,80, pFont, s_tmp);
   if( imode_ope == 4 ){
@@ -162,9 +170,11 @@ void ShowTextDesign()
 	::glMatrixMode(GL_MODELVIEW);
 }
 
+// Show the text in the simulation window
 void ShowTextSimulation()
 {
 	int* pFont=(int*)GLUT_BITMAP_8_BY_13;
+	// Define fps in string format
 	static char s_fps[32];
 	{
 		static int frame, timebase;
@@ -179,6 +189,7 @@ void ShowTextSimulation()
 		}
 	}
   
+  // Viewport for text area
 	GLint viewport[4];
 	::glGetIntegerv(GL_VIEWPORT,viewport);
 	const int win_w = viewport[2];
@@ -216,7 +227,9 @@ void ShowTextSimulation()
 	::glMatrixMode(GL_MODELVIEW);
 }
 
-
+/* 
+ * Event handler for mouse drag event
+ */
 void myGlutMotion( int x, int y )
 {
 	int viewport[4];
@@ -225,7 +238,8 @@ void myGlutMotion( int x, int y )
 	const int win_h = viewport[3];
 	const double mov_end_x = (2.0*x-win_w)/win_w;
 	const double mov_end_y = (win_h-2.0*y)/win_h;
-	////////////////
+
+	// Change the projection perspective by change camera position
 	if( imodifier == GLUT_ACTIVE_SHIFT ){ // pan
 		if( glutGetWindow() == iwin_sim ){	
 			camera_r.MousePan(mov_begin_x,mov_begin_y,mov_end_x,mov_end_y); 		
