@@ -731,11 +731,15 @@ void myGlutMenu_Des(int value)
   }
 }
 
+/*
+ * Setting up new pattern for clothes
+ */
 void SetNewProblem()
 {  
   const unsigned int indprob[4] = {6,9,11,10};
 	static int iprob =  0;
 	unsigned int nprob = 4;  
+	// Delete old problem
 	if( pAnalysis != 0 ){ 
     ::glutSetWindow(iwin_des);
     ::glutDetachMenu(GLUT_RIGHT_BUTTON);  
@@ -745,7 +749,10 @@ void SetNewProblem()
     delete pAnalysis; 
     pAnalysis = 0; 
   }
+
+  // Create new cloth 
   pAnalysis = new CAnalysis2D_Cloth_Static();  
+  // Add new cloth to gui handler
   gui_listner.SetAnalysisInitialize(pAnalysis,indprob[iprob]);  
   if( is_tex_mouse_pos ){ 
     pAnalysis->SetColor_FaceFEM(0.8,0.8,0.8); 
@@ -778,6 +785,7 @@ void SetNewProblem()
 		::glutPostRedisplay();
 //		drawer_coord.SetTrans(camera_r);
 	}
+	// Setting up the camera
 	{
     camera_l.SetRotationMode(Com::View::ROT_2D);
 		double rot[9];	camera_l.RotMatrix33(rot);
@@ -794,6 +802,7 @@ void SetNewProblem()
 		::glutPostRedisplay();
 		drawer_coord.SetTrans(camera_l);
 	}
+	// Set up the context menu for design window
   {
     ::glutSetWindow(iwin_des);
     imenu_right_click = ::glutCreateMenu(myGlutMenu_Des);
@@ -801,7 +810,7 @@ void SetNewProblem()
     ::glutAddMenuEntry("Dart Cutter", 7);    
     ::glutAddMenuEntry("EditCurve", 1);
     ::glutAddMenuEntry("ChangeToLine", 2);
-//    ::glutAddMenuEntry("ChangeToArc", 3);
+    ::glutAddMenuEntry("ChangeToArc", 3);
     ::glutAddMenuEntry("ChangeToPolyline", 4);
     ::glutAddMenuEntry("SmoothPolyline", 6);
     ////
@@ -812,7 +821,7 @@ void SetNewProblem()
       sprintf(str_sl, "Slider [ %s ]",name.c_str());
       ::glutAddMenuEntry(str_sl, isl+8);  
     }
-    ::glutAttachMenu(GLUT_RIGHT_BUTTON);    
+    ::glutAttachMenu(GLUT_RIGHT_BUTTON); // open the context menu by right click   
   }
   imode_ope = 0;
   pAnalysis->SetIsLighting(is_lighting);
