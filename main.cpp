@@ -18,7 +18,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
-#include <string>
+#include <cstring>
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -26,8 +26,8 @@
 #if defined(__APPLE__) && defined(__MACH__)
 #include <GLUT/glut.h>
 #else
-// #include <GL/glut.h>
-#include <OpenGL/glut.h>
+	#include <GL/glut.h>
+// #include <OpenGL/glut.h>
 #endif
 
 #include "delfem/camera.h"
@@ -736,7 +736,7 @@ void myGlutMenu_Des(int value)
  */
 void SetNewProblem()
 {  
-  const unsigned int indprob[4] = {6,9,11,10};
+  const unsigned int indprob[5] = {5,6,9,11,10};
 	static int iprob =  0;
 	unsigned int nprob = 4;  
 	// Delete old problem
@@ -969,7 +969,7 @@ void myGlutKeyboard(unsigned char key, int x, int y)
       else { imode_ope = 0; }
       break;
     case 'h': // write the log to file
-      gui_listner.Serialize( Com::CSerializer("hoge.txt",true ) );
+      // gui_listner.Serialize( Com::CSerializer("hoge.txt",true ) );
       break;
     case 'r':
       gui_listner.Solve_fromCad_InitValue();        
