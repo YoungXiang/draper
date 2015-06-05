@@ -120,7 +120,7 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
   slider_deform.Clear();
   aSymIdVPair.clear();
     
-  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0;
+  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0,id_l5=0,id_l6=0;
   std::vector< std::pair<unsigned int, unsigned int> > aIdECad_Stitch;
   if( inum_problem_ == 5 ){   // for the shirt model
 		Cad::CCadObj2D::CResAddPolygon res1; // 1st - front piece
@@ -740,24 +740,33 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 
   if( inum_problem_ == 5 ){ 
     {
+			// 1st front piece
       clothHandler_.AddClothPiece(id_l1, +0.8*1.6,+0.5*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l1, +0.0,+0.15*1.6,+0.2);  
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l1, 90, 0, 180);    
-      ////
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l1, 90, 0, 0);    
+      // 2nd front piece
       clothHandler_.AddClothPiece(id_l2, +0.0,+0.5*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l2, +0.0,-0.15*1.6,+0.1);
       clothHandler_.Transform_Cloth_RotBryantAngle(id_l2, 90, 0, 0);          
-      ////
-      clothHandler_.AddClothPiece(id_l3, +0.05*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l3, +0.3*1.6,+0.0,+0.3*1.6);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l3, 0, 0, -30);          
+			// back piece
+			clothHandler_.AddClothPiece(id_l2, +0.0,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l2, +0.0,-0.15*1.6,+0.1);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l2, 90, 0, 180);          						
+      // left sleeve
+      clothHandler_.AddClothPiece(id_l4, +0.05*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l4, +0.3*1.6,+0.0,+0.3*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, 0, 0, -30);          
       //    clothHandler_.Transform_Cloth_RotBryantAngle(id_l3, 0, 0, 0);           
-      clothHandler_.SetRadius(id_l3, 0.09*1.6); 
-      ////
-      clothHandler_.AddClothPiece(id_l4, +0.65*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l4, -0.3*1.6,+0.0,+0.3*1.6);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, 0, 0, +30);          
-      clothHandler_.SetRadius(id_l4, 0.09*1.6);           
+      clothHandler_.SetRadius(id_l4, 0.09*1.6); 
+      // right sleeve
+      clothHandler_.AddClothPiece(id_l5, +0.65*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l5, -0.3*1.6,+0.0,+0.3*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 0, 0, +30);          
+      clothHandler_.SetRadius(id_l5, 0.09*1.6);         '
+			// yoke piece
+			clothHandler_.AddClothPiece(id_l6, +0.0,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l6, +0.0,-0.15*1.6,+0.1);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l6, 90, 0, 180);      			
     }
     ////////
     const unsigned int is1 = slider_deform.AddSlider("length",0, 0,1);
