@@ -1264,8 +1264,7 @@ int main(int argc, char *argv[])
     ::glutAttachMenu(GLUT_RIGHT_BUTTON);    
   }
     
-
-  ::SetNewProblem();
+	::SetNewProblem();
   
   Initialize_OpenGL_Texture(4);
 
