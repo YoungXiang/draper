@@ -333,8 +333,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 		
 		// Mapping pieces together
 		// Map front pieces to back piece
-    aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[2],res2.aIdE[2]) );
-		aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[7],res2.aIdE[7]) );
+    aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[4],res2.aIdE[2]) );
+		aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[7],res1.aIdE[6]) );
 		
 		// Map 2 front pieces
     aIdECad_Stitch.push_back( std::make_pair(res1.aIdE[2],res2.aIdE[6]) );
@@ -746,7 +746,7 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 			// 1st front piece
       clothHandler_.AddClothPiece(id_l1, +0.4*1.6,+0.5*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l1, +0.0,+0.15*1.6,+0.2);  
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l1, 90, 0, 0);    
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l1, 0, 0, 0);    
       // 2nd front piece
       clothHandler_.AddClothPiece(id_l2, +0.8*1.6,+0.5*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l2, +0.0,-0.15*1.6,+0.1);
@@ -1900,6 +1900,7 @@ void CAnalysis2D_Cloth_Static::InitFieldEqn_fromMsh(const Cad::CCadObj2D& cad_2d
     aSolSens[iss].id_field_x     = id_field_x;    
     aSolSens[iss].is_active      = false;
   }
+	
   id_field_lamX = world.MakeField_FieldElemDim(id_field_base,2,VECTOR2, VALUE,CORNER);          
   id_field_lamY = world.MakeField_FieldElemDim(id_field_base,2,VECTOR2, VALUE,CORNER);            
   ////
@@ -1910,6 +1911,7 @@ void CAnalysis2D_Cloth_Static::InitFieldEqn_fromMsh(const Cad::CCadObj2D& cad_2d
 		aFrictionPoint.clear();
 		aFrictionPoint.resize(nno);
 	}	
+	
   stitch_ary_.MakeField(id_field_disp,id_field_base,world);
 	this->ClearLinearSystemPreconditioner();
   
