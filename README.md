@@ -1,7 +1,7 @@
 #DRAPER
-
-###Structure
 ===================
+
+##The Design Window
 ####Main file
 + Initialize the windows (design window & simulation window)
   + Window size, position
@@ -22,9 +22,7 @@
 ####analysis2d_cloth_static.cpp
 + SetModelProblem_Cloth: Define and switch the cloth models, map the edges, load the body model, call the cloth_handler instance to create the 3D model from 2D cad models and mesh2D
 
-###The Design Window
-===================
-
+##The Design Window
 ####Tools
 -----
 To change the tool, press right button and select tool from pop-up menu.
@@ -47,9 +45,7 @@ This design window should be activated so as to change the view of the design wi
 + Zoom : Page Up / Down
 
 
-###The Simulation Window
-=====================
-
+##The Simulation Window
 ####Texture
 -------
 you can change texture of cloth from pop up menu. select [texture] and chose one from submenu.
