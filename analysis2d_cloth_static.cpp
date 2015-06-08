@@ -119,10 +119,240 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
   aIdECad_Fix.clear();
   slider_deform.Clear();
   aSymIdVPair.clear();
-    
-  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0;
+	
+  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0,id_l5=0,id_l6=0;
   std::vector< std::pair<unsigned int, unsigned int> > aIdECad_Stitch;
-  if( inum_problem_ == 6 ){   
+  if( inum_problem_ == 5 ){   // for the shirt model
+		Cad::CCadObj2D::CResAddPolygon res1; // 1st - front piece
+    {	// define shape
+      std::vector<Com::CVector2D> vec_ary;
+	
+      vec_ary.push_back( Com::CVector2D(0.7-0.2,+0.15) );   // 0
+      vec_ary.push_back( Com::CVector2D(0.7-0.07,+0.05) );  // 1
+      vec_ary.push_back( Com::CVector2D(0.7,+0.05) );  			// 2
+      vec_ary.push_back( Com::CVector2D(0.7,+0.7) );  			// 3
+      vec_ary.push_back( Com::CVector2D(0.7-0.1,+0.8) );    // 4
+      vec_ary.push_back( Com::CVector2D(0.7-0.18,+0.7) );   // 5
+			vec_ary.push_back( Com::CVector2D(0.7-0.22,+0.45) );  // 6
+			
+			// Make the shape fit on the body (the body is scaled 1.5)
+      if( inum_problem_ == 5 ){
+        for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      }            
+			// Create the simple polygon from the vertexes
+      res1 = cad_2d.AddPolygon( vec_ary );
+						
+			// Change the line edge to the curve and enable the drag ability
+      // cad_2d.SetCurve_Polyline(res1.aIdE[1]);
+			// cad_2d.PreCompDragPolyline(res1.aIdE[1],vec_ary[1]*0.4+vec_ary[2]*0.6);
+			// cad_2d.DragPolyline(res1.aIdE[1],vec_ary[1]*0.4+vec_ary[2]*0.6+Com::CVector2D(-0.05,-0.03));      
+			
+			// cad_2d.SetCurve_Polyline(res1.aIdE[3]);      
+      // cad_2d.PreCompDragPolyline(res1.aIdE[3],vec_ary[4]*0.4+vec_ary[3]*0.6);			
+      // cad_2d.DragPolyline(res1.aIdE[3],vec_ary[4]*0.4+vec_ary[3]*0.6+Com::CVector2D(+0.05,-0.03));           
+
+			// cad_2d.SetCurve_Polyline(res1.aIdE[5]);      
+      // cad_2d.PreCompDragPolyline(res1.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6);			
+      // cad_2d.DragPolyline(res1.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6+Com::CVector2D(+0.05,-0.03)); 			
+    }
+    Cad::CCadObj2D::CResAddPolygon res2;    
+    {	// define shape 2nd - front piece
+      std::vector<Com::CVector2D> vec_ary;
+      vec_ary.push_back( Com::CVector2D(0.8,+0.05 ) );       // 0
+      vec_ary.push_back( Com::CVector2D(0.8+0.13,+0.05) );  // 1
+      vec_ary.push_back( Com::CVector2D(0.8+0.20,+0.15) );   // 2
+      vec_ary.push_back( Com::CVector2D(0.8+0.22,+0.45) );  // 3
+      vec_ary.push_back( Com::CVector2D(0.8+0.13,+0.7) );  // 4
+      vec_ary.push_back( Com::CVector2D(0.8+0.1,+0.8) );   // 5
+			vec_ary.push_back( Com::CVector2D(0.8,+0.7) );   // 6
+			
+			// Make the shape fit on the body (the body is scaled 1.5)
+      if( inum_problem_ == 5	 ){
+        for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      }            
+      res2 = cad_2d.AddPolygon( vec_ary );
+      
+			// Change the line edge to the curve and enable the drag ability
+			// cad_2d.SetCurve_Polyline(res2.aIdE[1]);
+			// cad_2d.PreCompDragPolyline(res2.aIdE[1],vec_ary[1]*0.4+vec_ary[2]*0.6);
+			// cad_2d.DragPolyline(res2.aIdE[1],vec_ary[1]*0.4+vec_ary[2]*0.6+Com::CVector2D(-0.05,-0.03));      
+			
+			// cad_2d.SetCurve_Polyline(res2.aIdE[3]);      
+      // cad_2d.PreCompDragPolyline(res2.aIdE[3],vec_ary[4]*0.4+vec_ary[3]*0.6);			
+      // cad_2d.DragPolyline(res2.aIdE[3],vec_ary[4]*0.4+vec_ary[3]*0.6+Com::CVector2D(+0.05,-0.03));           
+
+			// cad_2d.SetCurve_Polyline(res2.aIdE[5]);      
+      // cad_2d.PreCompDragPolyline(res2.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6);			
+      // cad_2d.DragPolyline(res2.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6+Com::CVector2D(+0.05,-0.03)); 			
+    }      		
+		
+		// Make 2 front pieces symetric
+		aSymIdVPair.push_back( std::make_pair(res1.aIdV[0],res2.aIdV[1]) );
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[1],res2.aIdV[0]) );
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[2],res2.aIdV[7]) );
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[7],res2.aIdV[2]) );      
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[3],res2.aIdV[5]) );        
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[5],res2.aIdV[3]) );        
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[5],res2.aIdV[5]) );        
+    aSymIdVPair.push_back( std::make_pair(res1.aIdV[4],res2.aIdV[6]) );        
+		aSymIdVPair.push_back( std::make_pair(res1.aIdV[6],res2.aIdV[6]) );        
+		
+		// NOTE: We only use 1 piece for back 
+		Cad::CCadObj2D::CResAddPolygon res3;
+    {	// define shape back piece
+      std::vector<Com::CVector2D> vec_ary;
+			
+      vec_ary.push_back( Com::CVector2D(-0.25,+0.15) ); // 0
+			vec_ary.push_back( Com::CVector2D(-0.15,+0.05) ); // 1
+			vec_ary.push_back( Com::CVector2D(+0.15,+0.05) ); // 2
+      vec_ary.push_back( Com::CVector2D(+0.25,+0.15) ); // 3
+      vec_ary.push_back( Com::CVector2D(+0.27,+0.45) ); // 4
+      vec_ary.push_back( Com::CVector2D(+0.25,+0.65) ); // 5
+      vec_ary.push_back( Com::CVector2D(-0.25,+0.65) ); // 6
+      vec_ary.push_back( Com::CVector2D(-0.27,+0.45) ); // 7
+			
+      if( inum_problem_ == 5){
+        for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      }            
+      res3 = cad_2d.AddPolygon( vec_ary );
+			
+			// cad_2d.SetCurve_Polyline(res3.aIdE[0]);      
+      // cad_2d.PreCompDragPolyline(res3.aIdE[0],vec_ary[0]*0.4+vec_ary[1]*0.6);			
+      // cad_2d.DragPolyline(res3.aIdE[0],vec_ary[0]*0.4+vec_ary[1]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res3.aIdE[2]);      
+      // cad_2d.PreCompDragPolyline(res3.aIdE[2],vec_ary[2]*0.4+vec_ary[3]*0.6);			
+      // cad_2d.DragPolyline(res3.aIdE[2],vec_ary[2]*0.4+vec_ary[3]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res3.aIdE[5]);      
+      // cad_2d.PreCompDragPolyline(res3.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6);			
+      // cad_2d.DragPolyline(res3.aIdE[5],vec_ary[5]*0.4+vec_ary[6]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res3.aIdE[7]);      
+      // cad_2d.PreCompDragPolyline(res3.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6);			
+      // cad_2d.DragPolyline(res3.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6+Com::CVector2D(+0.05,-0.03));
+    }
+		
+		aSymIdVPair.push_back( std::make_pair(res3.aIdV[0],res3.aIdV[2]) );
+		aSymIdVPair.push_back( std::make_pair(res3.aIdV[4],res3.aIdV[6]) );
+		aSymIdVPair.push_back( std::make_pair(res3.aIdV[3],res3.aIdV[7]) );
+    
+    Cad::CCadObj2D::CResAddPolygon res4;
+    {	// define shape // 1st sleeve -  piece
+      std::vector<Com::CVector2D> vec_ary;
+			vec_ary.push_back( Com::CVector2D(+0.60,-0.6) );
+      vec_ary.push_back( Com::CVector2D(+0.60 + 0.35,-0.8) );
+      vec_ary.push_back( Com::CVector2D(+0.60 + 0.38,-0.65) );            
+      vec_ary.push_back( Com::CVector2D(+0.60 + 0.38,-0.35) );      
+      vec_ary.push_back( Com::CVector2D(+0.60 + 0.35,-0.25) );			
+      vec_ary.push_back( Com::CVector2D(+0.60,-0.4) );			
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+			
+      res4 = cad_2d.AddPolygon( vec_ary );
+			
+			// cad_2d.SetCurve_Polyline(res4.aIdE[7]);      
+      // cad_2d.PreCompDragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6);			
+      // cad_2d.DragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res4.aIdE[7]);      
+      // cad_2d.PreCompDragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6);			
+      // cad_2d.DragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res4.aIdE[7]);      
+      // cad_2d.PreCompDragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6);			
+      // cad_2d.DragPolyline(res4.aIdE[7],vec_ary[7]*0.4+vec_ary[8]*0.6+Com::CVector2D(+0.05,-0.03));
+    }
+    Cad::CCadObj2D::CResAddPolygon res5;
+    {	// define shape 2nd - sleeve piece
+      std::vector<Com::CVector2D> vec_ary;
+			
+      vec_ary.push_back( Com::CVector2D(+0.10,-0.8) );
+      vec_ary.push_back( Com::CVector2D(+0.10 + 0.35,-0.6) );
+      vec_ary.push_back( Com::CVector2D(+0.10 + 0.35,-0.4) );           
+      vec_ary.push_back( Com::CVector2D(+0.10,-0.25) );			
+      vec_ary.push_back( Com::CVector2D(+0.10 - 0.08,-0.35) );      
+      vec_ary.push_back( Com::CVector2D(+0.10 - 0.08,-0.65) );            
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+			
+      res5 = cad_2d.AddPolygon( vec_ary );    
+
+			// cad_2d.SetCurve_Polyline(res5.aIdE[3]);      
+      // cad_2d.PreCompDragPolyline(res5.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6);			
+      // cad_2d.DragPolyline(res5.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6+Com::CVector2D(+0.05,-0.03));	
+			
+			// cad_2d.SetCurve_Polyline(res5.aIdE[4]);      
+      // cad_2d.PreCompDragPolyline(res5.aIdE[4],vec_ary[4]*0.4+vec_ary[5]*0.6);			
+      // cad_2d.DragPolyline(res5.aIdE[4],vec_ary[4]*0.4+vec_ary[5]*0.6+Com::CVector2D(+0.05,-0.03));
+			
+			// cad_2d.SetCurve_Polyline(res5.aIdE[5]);      
+      // cad_2d.PreCompDragPolyline(res5.aIdE[5],vec_ary[5]*0.4+vec_ary[0]*0.6);			
+      // cad_2d.DragPolyline(res5.aIdE[5],vec_ary[5]*0.4+vec_ary[0]*0.6+Com::CVector2D(+0.05,-0.03));	
+    }    
+		
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[0],res5.aIdV[0]) );
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[1],res5.aIdV[5]) );
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[5],res5.aIdV[1]) );
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[2],res5.aIdV[4]) );      
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[4],res5.aIdV[2]) );      
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[4],res5.aIdV[2]) );      
+    aSymIdVPair.push_back( std::make_pair(res4.aIdV[3],res5.aIdV[3]) );      
+  
+		Cad::CCadObj2D::CResAddPolygon res6;
+    {	// define shape 2nd - yoke
+      std::vector<Com::CVector2D> vec_ary;
+      vec_ary.push_back( Com::CVector2D(-0.25,+0.7) );  // 0
+      vec_ary.push_back( Com::CVector2D(+0.25,+0.7) );  // 1
+      vec_ary.push_back( Com::CVector2D(+0.27,+0.85) ); // 2
+      vec_ary.push_back( Com::CVector2D(+0.1,+0.9) );   // 3
+      vec_ary.push_back( Com::CVector2D(-0.1,+0.9) );   // 4
+      vec_ary.push_back( Com::CVector2D(-0.27,+0.7) );  // 5
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      res6 = cad_2d.AddPolygon( vec_ary ); 
+			
+			// cad_2d.SetCurve_Polyline(res6.aIdE[3]);      
+      // cad_2d.PreCompDragPolyline(res6.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6);			
+      // cad_2d.DragPolyline(res6.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6+Com::CVector2D(+0.05,-0.03));
+    }   		
+	  
+		// Add cad 2d to mesh
+    id_l1 = res1.id_l_add;
+    id_l2 = res2.id_l_add;
+		id_l3 = res3.id_l_add;
+    id_l4 = res4.id_l_add;
+    id_l5 = res5.id_l_add;
+		id_l6 = res6.id_l_add;
+    mesh_2d.AddIdLCad_CutMesh(res1.id_l_add);
+    mesh_2d.AddIdLCad_CutMesh(res2.id_l_add);    
+		mesh_2d.AddIdLCad_CutMesh(res3.id_l_add);    
+    mesh_2d.AddIdLCad_CutMesh(res4.id_l_add);        
+    mesh_2d.AddIdLCad_CutMesh(res5.id_l_add);
+		mesh_2d.AddIdLCad_CutMesh(res6.id_l_add);
+		
+		// Mapping pieces together
+		// Map front pieces to back piece
+    aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[4],res2.aIdE[2]) );
+		aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[7],res1.aIdE[6]) );
+		
+		// Map 2 front pieces
+    aIdECad_Stitch.push_back( std::make_pair(res1.aIdE[2],res2.aIdE[6]) );
+		
+		// Map back piece to yoke
+    aIdECad_Stitch.push_back( std::make_pair(res3.aIdE[5],res6.aIdE[0]) );
+		
+		// Map back, yoke, front to 1st - sleeve
+    aIdECad_Stitch.push_back( std::make_pair(res4.aIdE[1],res3.aIdE[6]) );
+		aIdECad_Stitch.push_back( std::make_pair(res4.aIdE[2],res6.aIdE[6]) );
+		aIdECad_Stitch.push_back( std::make_pair(res4.aIdE[3],res1.aIdE[5]) );
+		
+		// Map back, yoke, front to 2nd - sleeve
+    aIdECad_Stitch.push_back( std::make_pair(res5.aIdE[3],res2.aIdE[4]) );
+		aIdECad_Stitch.push_back( std::make_pair(res5.aIdE[4],res3.aIdE[4]) );
+		aIdECad_Stitch.push_back( std::make_pair(res5.aIdE[5],res6.aIdE[1]) );		
+		
+  } else if( inum_problem_ == 6 ){   
     // The first piece of cloth
     Cad::CCadObj2D::CResAddPolygon res1;
     {	
@@ -225,7 +455,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
       cad_2d.DragPolyline(res1.aIdE[2],vec_ary[2]*0.4+vec_ary[3]*0.6+Com::CVector2D(-0.05,-0.03));      
       cad_2d.SetCurve_Polyline(res1.aIdE[6]);      
       cad_2d.PreCompDragPolyline(res1.aIdE[6],vec_ary[7]*0.4+vec_ary[6]*0.6);
-      cad_2d.DragPolyline(res1.aIdE[6],vec_ary[7]*0.4+vec_ary[6]*0.6+Com::CVector2D(+0.05,-0.03));            
+      cad_2d.DragPolyline(res1.aIdE[6],vec_ary[7]*0.4+vec_ary[6]*0.6+Com::CVector2D(+0.05,-0.03));   
+			
       aSymIdVPair.push_back( std::make_pair(res1.aIdV[1],res1.aIdV[0]) );
       aSymIdVPair.push_back( std::make_pair(res1.aIdV[2],res1.aIdV[7]) );
       aSymIdVPair.push_back( std::make_pair(res1.aIdV[3],res1.aIdV[6]) );
@@ -254,7 +485,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
       cad_2d.DragPolyline(res2.aIdE[2],vec_ary[2]*0.4+vec_ary[3]*0.6+Com::CVector2D(-0.05,-0.03));      
       cad_2d.SetCurve_Polyline(res2.aIdE[7]);      
       cad_2d.PreCompDragPolyline(res2.aIdE[7],vec_ary[8]*0.4+vec_ary[7]*0.6);
-      cad_2d.DragPolyline(res2.aIdE[7],vec_ary[8]*0.4+vec_ary[7]*0.6+Com::CVector2D(+0.05,-0.03));                  
+      cad_2d.DragPolyline(res2.aIdE[7],vec_ary[8]*0.4+vec_ary[7]*0.6+Com::CVector2D(+0.05,-0.03));   
+			
       aSymIdVPair.push_back( std::make_pair(res2.aIdV[1],res2.aIdV[0]) );
       aSymIdVPair.push_back( std::make_pair(res2.aIdV[2],res2.aIdV[8]) );
       aSymIdVPair.push_back( std::make_pair(res2.aIdV[3],res2.aIdV[7]) );
@@ -458,7 +690,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
   clothHandler_.Clear();    
 	if( pCT != 0 ){ delete pCT; pCT=0; }	  
 	else if(
-            inum_problem_ == 6 
+						 inum_problem_ == 5
+          || inum_problem_ == 6 
           || inum_problem_ == 9
           || inum_problem_ == 11 )
   {
@@ -467,7 +700,7 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
     CSurfaceMeshReader cnt_mesh;  
     {
       obj_mesh.Load_Ply("models/man_15k.ply");         
-      cnt_mesh.Load_Ply("models/arm_cnt.ply");    
+      cnt_mesh.Load_Ply("models/man_15k.ply");    
     }
     //    cnt_mesh.Load_Ply("../model/kid_cnt.ply");
     double c[3],w[3]; obj_mesh.GetCenterWidth(c[0],c[1],c[2], w[0],w[1],w[2]);    
@@ -508,8 +741,54 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
   
   std::cout << "inum_problem : " << inum_problem_ << std::endl;
 
-  
-  if( inum_problem_ == 6 ){    
+  if( inum_problem_ == 5 ){ 
+    {
+			// 1st front piece
+      clothHandler_.AddClothPiece(id_l1, +0.4*1.6,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l1, +0.0,+0.15*1.6,+0.2);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l1, 0, 0, 0);    
+      // 2nd front piece
+      clothHandler_.AddClothPiece(id_l2, +0.8*1.6,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l2, +0.0,-0.15*1.6,+0.1);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l2, 90, 0, 0);          
+			// back piece
+			clothHandler_.AddClothPiece(id_l2, +0.0,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l2, +0.0,-0.15*1.6,+0.1);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l2, 90, 0, 180);          						
+      // left sleeve
+      clothHandler_.AddClothPiece(id_l4, +0.05*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l4, +0.3*1.6,+0.0,+0.3*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, 0, 0, -30);          
+      //    clothHandler_.Transform_Cloth_RotBryantAngle(id_l3, 0, 0, 0);           
+      clothHandler_.SetRadius(id_l4, 0.09*1.6); 
+      // right sleeve
+      clothHandler_.AddClothPiece(id_l4, +0.65*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l5, -0.3*1.6,+0.0,+0.3*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 0, 0, +30);          
+      clothHandler_.SetRadius(id_l5, 0.09*1.6);      
+			// yoke piece
+			clothHandler_.AddClothPiece(id_l6, +0.0,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l6, +0.0,-0.15*1.6,+0.1);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l6, 90, 0, 180);      			
+    }
+    // ////////
+    // const unsigned int is1 = slider_deform.AddSlider("length",0, 0,1);
+    // slider_deform.AddSliderParamToLoop(id_l1, is1, 1, 3);
+    // slider_deform.AddSliderParamToLoop(id_l2, is1, 1, 3);
+    // ////
+    // const unsigned int is2 = slider_deform.AddSlider("waist",0, -0.5,0.5);
+    // slider_deform.AddSliderParamToLoop(id_l1, is2, 0, 4);
+    // slider_deform.AddSliderParamToLoop(id_l2, is2, 0, 4);
+    // ////
+    // const unsigned int is3 = slider_deform.AddSlider("sleeve length",0, -0.5,1);    
+    // slider_deform.AddSliderParamToLoop(id_l3, is3, 0, 0);
+    // slider_deform.AddSliderParamToLoop(id_l4, is3, 0, 1);
+    // ////
+    // slider_deform.SetLoopCenter(id_l1, 0.8, 0.5);
+    // slider_deform.SetLoopCenter(id_l2, 0.0, 0.5);        
+    // slider_deform.SetLoopCenter(id_l3, +0.05, -0.5);
+    // slider_deform.SetLoopCenter(id_l4, +0.65, -0.5);    
+  } else if( inum_problem_ == 6 ){    
     {
       clothHandler_.AddClothPiece(id_l1, +0.8*1.6,+0.5*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l1, +0.0*1.6,+0.20*1.6,+0.15*1.6);  
@@ -1621,6 +1900,7 @@ void CAnalysis2D_Cloth_Static::InitFieldEqn_fromMsh(const Cad::CCadObj2D& cad_2d
     aSolSens[iss].id_field_x     = id_field_x;    
     aSolSens[iss].is_active      = false;
   }
+	
   id_field_lamX = world.MakeField_FieldElemDim(id_field_base,2,VECTOR2, VALUE,CORNER);          
   id_field_lamY = world.MakeField_FieldElemDim(id_field_base,2,VECTOR2, VALUE,CORNER);            
   ////
@@ -1631,6 +1911,7 @@ void CAnalysis2D_Cloth_Static::InitFieldEqn_fromMsh(const Cad::CCadObj2D& cad_2d
 		aFrictionPoint.clear();
 		aFrictionPoint.resize(nno);
 	}	
+	
   stitch_ary_.MakeField(id_field_disp,id_field_base,world);
 	this->ClearLinearSystemPreconditioner();
   
