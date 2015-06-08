@@ -18,7 +18,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
-#include <string>
+#include <cstring>
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -26,8 +26,8 @@
 #if defined(__APPLE__) && defined(__MACH__)
 #include <GLUT/glut.h>
 #else
-// #include <GL/glut.h>
-#include <OpenGL/glut.h>
+	#include <GL/glut.h>
+// #include <OpenGL/glut.h>
 #endif
 
 #include "delfem/camera.h"
@@ -35,7 +35,7 @@
 #include "analysis2d_cloth_static.h"
 #include "designer2d_cloth.h"
 
-double mov_begin_x, mov_begin_y;	// ÉJÅ[É\Éãà íuÇÃê≥ãKç¿ïW
+double mov_begin_x, mov_begin_y; // start position in mouse events
 int imodifier;
 
 bool is_lighting = true;
@@ -43,12 +43,12 @@ bool is_animation = true;
 CDesigner2D_Cloth gui_listner;
 CAnalysis2D_Cloth_Static* pAnalysis = 0;
 
-Com::View::CCamera camera_l;
-Com::View::CCamera camera_r;
+Com::View::CCamera camera_l; // camera in design window
+Com::View::CCamera camera_r; // camera in simulate window
 Com::View::CDrawerCoord drawer_coord;
 unsigned int iclass_type = 0;
-int iwin_des, iwin_sim;
-int imenu_right_click;
+int iwin_des, iwin_sim; // ID of design window, ID of simulate window
+int imenu_right_click; // ID of right click menu
 
 // 0:drag
 // 1:dart cut
@@ -56,7 +56,7 @@ int imenu_right_click;
 // 3:smooth
 // 4:slider 0
 // 5:dart_cut not sew
-unsigned int imode_ope = 0;
+unsigned int imode_ope = 0; // mouse events mode in design windows 
 int islider_active = -1;
 std::string slider_name;
 bool is_active_slider = false;
@@ -72,6 +72,7 @@ unsigned int m_texName = 0;
 bool is_display_rotation = false;
 double display_rotation_theta = 0;
 
+// Render string in windows
 void RenderBitmapString(float x, float y, void *font,char *string)
 {
   char *c;
@@ -81,16 +82,22 @@ void RenderBitmapString(float x, float y, void *font,char *string)
   }
 }
 
+// Show the text in design window
 void ShowTextDesign()
 {
   const bool is_lighting = glIsEnabled(GL_LIGHTING);  
 	int* pFont=(int*)GLUT_BITMAP_8_BY_13;
 
+  // Design viewport for text area
 	GLint viewport[4];
 	::glGetIntegerv(GL_VIEWPORT,viewport);
 	const int win_w = viewport[2];
 	const int win_h = viewport[3];
 
+  /* 
+   * Set up the view with orthorgraphic type
+   * Disable the lighting effect and enable it later
+   */
 	::glMatrixMode(GL_PROJECTION);
 	::glPushMatrix();
 	::glLoadIdentity();
@@ -101,12 +108,14 @@ void ShowTextDesign()
 	::glScalef(1, -1, 1);
 	::glTranslatef(0, -win_h, 0);
   ::glDisable(GL_LIGHTING);
-//	::glDisable(GL_DEPTH_TEST);
+  //::glDisable(GL_DEPTH_TEST);
   // 0:drag
   // 1:dart cut
   // 2:curve_edit
   // 3:smooth
   // 4:slider 0  
+  
+  // Show the instructions
 	char s_tmp[256];  
   {
     strcpy(s_tmp,"Press \' \' button to try different 3D model");
@@ -135,12 +144,14 @@ void ShowTextDesign()
     ::glColor3d(0.0, 0.0, 1.0);
     RenderBitmapString(10,60, pFont, s_tmp);            
   } 
-  if(      imode_ope == 0 ){ strcpy(s_tmp,"Tool : Drag"); }
+  if(      imode_ope == 0 ){ strcpy(s_tmp, "Tool : Drag"); }
   else if( imode_ope == 1 ){ strcpy(s_tmp, "Tool : Dart Cutter"); }
   else if( imode_ope == 2 ){ strcpy(s_tmp, "Tool : Curve Edit"); }  
   else if( imode_ope == 3 ){ strcpy(s_tmp, "Tool : Smooth"); }    
   else if( imode_ope == 4 ){ strcpy(s_tmp, "Tool : Slider"); }      
   else if( imode_ope == 5 ){ strcpy(s_tmp, "Tool : Hole"); }        
+
+  // Set color and render instructions
 	::glColor3d(1.0, 0.0, 0.0);  
 	RenderBitmapString(10,80, pFont, s_tmp);
   if( imode_ope == 4 ){
@@ -162,9 +173,11 @@ void ShowTextDesign()
 	::glMatrixMode(GL_MODELVIEW);
 }
 
+// Show the text in the simulation window
 void ShowTextSimulation()
 {
 	int* pFont=(int*)GLUT_BITMAP_8_BY_13;
+	// Define fps in string format
 	static char s_fps[32];
 	{
 		static int frame, timebase;
@@ -179,6 +192,7 @@ void ShowTextSimulation()
 		}
 	}
   
+  // Viewport value [x, y, width, heigth]
 	GLint viewport[4];
 	::glGetIntegerv(GL_VIEWPORT,viewport);
 	const int win_w = viewport[2];
@@ -216,7 +230,9 @@ void ShowTextSimulation()
 	::glMatrixMode(GL_MODELVIEW);
 }
 
-
+/* 
+ * Event handler for mouse events
+ */
 void myGlutMotion( int x, int y )
 {
 	int viewport[4];
@@ -225,7 +241,11 @@ void myGlutMotion( int x, int y )
 	const int win_h = viewport[3];
 	const double mov_end_x = (2.0*x-win_w)/win_w;
 	const double mov_end_y = (win_h-2.0*y)/win_h;
-	////////////////
+
+	/* 
+	 * Re-calculate the camera properties and 
+	 * change the projection perspective by change camera position
+	 */
 	if( imodifier == GLUT_ACTIVE_SHIFT ){ // pan
 		if( glutGetWindow() == iwin_sim ){	
 			camera_r.MousePan(mov_begin_x,mov_begin_y,mov_end_x,mov_end_y); 		
@@ -400,12 +420,14 @@ void myGlutPassive( int x, int y )
   ::glutPostRedisplay();
 }
 
+/*
+ * Mouse event handlers 
+ */
 void myGlutMouse(int button, int state, int x, int y)
 {
-  /////
-	imodifier = glutGetModifiers();
+	imodifier = glutGetModifiers(); // addition key id (ctrl, shift, alt)
 	int viewport[4];
-	::glGetIntegerv(GL_VIEWPORT,viewport);
+	::glGetIntegerv(GL_VIEWPORT,viewport); // viewport info
 	const int win_w = viewport[2];
 	const int win_h = viewport[3];
 	mov_begin_x = (2.0*x-win_w)/(double)win_w;
@@ -416,11 +438,13 @@ void myGlutMouse(int button, int state, int x, int y)
       if( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN ){
         is_rubber_band = true;
         const Com::CVector3D& oloc0 = camera_l.ProjectionOnPlane(mov_begin_x,mov_begin_y);    
-        pos_pick = Com::CVector2D(oloc0.x,oloc0.y);
+        // store the start point of cut line
+        pos_pick = Com::CVector2D(oloc0.x,oloc0.y); 
         pos_relese = pos_pick;
       }
       if( button == GLUT_LEFT_BUTTON && state == GLUT_UP ){
         if( is_rubber_band ){
+          // Add the cut line
           gui_listner.Cad_AddCutLine(pos_pick,pos_relese);
           is_rubber_band = false;
         }
@@ -599,7 +623,12 @@ void myGlutMouse(int button, int state, int x, int y)
   }
 }
 
+/* 
+ * When we do nothing in two windows
+ * Just re-draw the context
+ */
 void myGlutIdle(){	
+  // Need to calculate and solve the equation for enabled animation case
 	if( is_animation ){
 		gui_listner.FollowMshToCad_ifNeeded();
 		gui_listner.Solve_ifNeeded();
@@ -623,6 +652,9 @@ void myGlutIdle(){
   }  
 }
  
+/*
+ * Recalculate the camera properties when windows are resizing
+ */
 void myGlutResize(int w, int h)
 {		
 	if (glutGetWindow() == iwin_des) {	
@@ -644,13 +676,16 @@ void myGlutResize(int w, int h)
 	::glutPostRedisplay();
 }
 
-
+/*
+ * Menu handler for design window
+ */
 void myGlutMenu_Des(int value)
 {
   Cad::CAD_ELEM_TYPE itype_cad_part; unsigned int id_cad_part;
   double tmp_x, tmp_y;
   gui_listner.Cad_GetPicked(itype_cad_part, id_cad_part, tmp_x,tmp_y);
   
+  // Set mouse mode values
   switch(value) {
     case 5:
       imode_ope = 0;  
@@ -696,11 +731,15 @@ void myGlutMenu_Des(int value)
   }
 }
 
+/*
+ * Setting up new pattern for clothes
+ */
 void SetNewProblem()
 {  
-  const unsigned int indprob[4] = {6,9,11,10};
+  const unsigned int indprob[5] = {5,6,9,11,10};
 	static int iprob =  0;
 	unsigned int nprob = 4;  
+	// Delete old problem
 	if( pAnalysis != 0 ){ 
     ::glutSetWindow(iwin_des);
     ::glutDetachMenu(GLUT_RIGHT_BUTTON);  
@@ -710,7 +749,10 @@ void SetNewProblem()
     delete pAnalysis; 
     pAnalysis = 0; 
   }
+
+  // Create new cloth 
   pAnalysis = new CAnalysis2D_Cloth_Static();  
+  // Add new cloth to gui handler
   gui_listner.SetAnalysisInitialize(pAnalysis,indprob[iprob]);  
   if( is_tex_mouse_pos ){ 
     pAnalysis->SetColor_FaceFEM(0.8,0.8,0.8); 
@@ -743,6 +785,7 @@ void SetNewProblem()
 		::glutPostRedisplay();
 //		drawer_coord.SetTrans(camera_r);
 	}
+	// Setting up the camera
 	{
     camera_l.SetRotationMode(Com::View::ROT_2D);
 		double rot[9];	camera_l.RotMatrix33(rot);
@@ -750,7 +793,7 @@ void SetNewProblem()
 		camera_l.SetObjectBoundingBox(bb);
 		camera_l.Fit();	
     camera_l.SetScale(1.2);        
-//   camera_l.SetScale(1.0);            
+//  camera_l.SetScale(1.0);            
     ////
 		::glutSetWindow(iwin_des);
 		::glMatrixMode(GL_PROJECTION);
@@ -759,6 +802,7 @@ void SetNewProblem()
 		::glutPostRedisplay();
 		drawer_coord.SetTrans(camera_l);
 	}
+	// Set up the context menu for design window
   {
     ::glutSetWindow(iwin_des);
     imenu_right_click = ::glutCreateMenu(myGlutMenu_Des);
@@ -766,7 +810,7 @@ void SetNewProblem()
     ::glutAddMenuEntry("Dart Cutter", 7);    
     ::glutAddMenuEntry("EditCurve", 1);
     ::glutAddMenuEntry("ChangeToLine", 2);
-//    ::glutAddMenuEntry("ChangeToArc", 3);
+    ::glutAddMenuEntry("ChangeToArc", 3);
     ::glutAddMenuEntry("ChangeToPolyline", 4);
     ::glutAddMenuEntry("SmoothPolyline", 6);
     ////
@@ -777,7 +821,7 @@ void SetNewProblem()
       sprintf(str_sl, "Slider [ %s ]",name.c_str());
       ::glutAddMenuEntry(str_sl, isl+8);  
     }
-    ::glutAttachMenu(GLUT_RIGHT_BUTTON);    
+    ::glutAttachMenu(GLUT_RIGHT_BUTTON); // open the context menu by right click   
   }
   imode_ope = 0;
   pAnalysis->SetIsLighting(is_lighting);
@@ -787,24 +831,28 @@ void SetNewProblem()
 	if( iprob == nprob ){ iprob = 0; }
 }
 
+/* 
+ * Event handlers for special key
+ * Change the scale of camera
+ */
 void myGlutSpecial(int Key, int x, int y)
 {
 	Com::View::CCamera& camera = (glutGetWindow()==iwin_sim) ? camera_r : camera_l;
 	switch(Key)
 	{
-	case GLUT_KEY_PAGE_UP:
+	case GLUT_KEY_PAGE_UP: // zoom in
 		{
 			const double tmp_scale = camera.GetScale() * 1.111;
 			camera.SetScale( tmp_scale );
 		}
 		break;
-	case GLUT_KEY_PAGE_DOWN:
+	case GLUT_KEY_PAGE_DOWN: // zoom out 
 		{
 			const double tmp_scale = camera.GetScale() * 0.9;
 			camera.SetScale( tmp_scale );
 		}
 		break;
-	case GLUT_KEY_HOME :
+	case GLUT_KEY_HOME : // fit on the screen
 		{
 			double rot[9];
 			camera.RotMatrix33(rot);
@@ -823,8 +871,12 @@ void myGlutSpecial(int Key, int x, int y)
 	::glutPostRedisplay();
 }
  
+/*
+ * Init glut area
+ */
 void myGlutDisplay(void)
 {
+  // Clear and set the background color
   ::glClearColor(1.f , 1.f, 1.f ,1.0f);      
   
 	::glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -833,21 +885,22 @@ void myGlutDisplay(void)
 	::glEnable(GL_POLYGON_OFFSET_FILL );
 	::glPolygonOffset( 1.1f, 4.0f );
   
+  // Set view model transform 
 	if( glutGetWindow() == iwin_sim ){	
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		Com::View::SetModelViewTransform(camera_r);		    
+		Com::View::SetModelViewTransform(camera_r); // set camera for view		    
 		gui_listner.Draw(4);    
-    ShowTextSimulation();    
+    ShowTextSimulation(); // show text in simulation window   
 	}
 	else{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		Com::View::SetModelViewTransform(camera_l);				
+		Com::View::SetModelViewTransform(camera_l); // set camera for view				
 		gui_listner.Draw(1);
-    ShowTextDesign();
+    ShowTextDesign(); // show text in design window
     drawer_coord.Draw();    
-    if( is_rubber_band ){   
+    if( is_rubber_band ){ // draw the line cut in dart cut mode
       ::glColor3d(1,0,0);
       ::glBegin(GL_LINES);
       ::glVertex2d(pos_pick.x,pos_pick.y);
@@ -855,6 +908,7 @@ void myGlutDisplay(void)
       ::glEnd();
     }    
     if( imode_ope == 4 ){
+      // get the slider position 
       double min, max;
       const double val = gui_listner.GetValueSlider(islider_active,min,max);
       const double ratio = (val-min)/(max-min)*2-1;      
@@ -869,6 +923,7 @@ void myGlutDisplay(void)
       ::glVertex2d(-1,-0.9);
       ::glVertex2d(+1,-0.9);      
       ::glEnd();
+      // Draw the slider for slider mode
       if( is_active_slider == -1 ){ ::glColor3d(0,0,0); }
       else{                         ::glColor3d(1,0,0); }
       ::glBegin(GL_QUADS);
@@ -887,29 +942,34 @@ void myGlutDisplay(void)
 	::glutSwapBuffers();
 }
 
+/*
+ * The keyboard event handler
+ */
 void myGlutKeyboard(unsigned char key, int x, int y)
 {
   switch (key) {
-    case 'q':
+    // for quit
+    case 'q': 
     case 'Q':
     case '\033': 
       exit(0);
       break;
-    case 'f':
+
+    case 'f': // write the dxf file
       gui_listner.File_WriteDXF("cloth_pattern.dxf", 4);
       break;
-    case 'g':
+    case 'g': // write the stl mesh file
       if( pAnalysis != 0 ){
         pAnalysis->WriteObjMeshSTL("object.stl", 100);
       }      
       break;      
-    case 'k':
+    case 'k': // Reset the mouse mode to default
       gui_listner.HilightCadTypeID(Cad::NOT_SET,0);
       if( imode_ope == 0 ){ imode_ope = 1; }
       else { imode_ope = 0; }
       break;
-    case 'h':
-//      gui_listner.Serialize( Com::CSerializer("hoge.txt",true ) );
+    case 'h': // write the log to file
+      // gui_listner.Serialize( Com::CSerializer("hoge.txt",true ) );
       break;
     case 'r':
       gui_listner.Solve_fromCad_InitValue();        
@@ -943,15 +1003,15 @@ void myGlutKeyboard(unsigned char key, int x, int y)
       break;
     case 'c':   
       break;
-    case 'l':      
+    case 'l': // switch lighting mode
       is_lighting = !is_lighting;
       if( is_lighting ){ ::glEnable( GL_LIGHTING); }
       else{              ::glDisable(GL_LIGHTING); }
       pAnalysis->SetIsLighting(is_lighting);
-    case 'e':
+    case 'e': // Show the mesh
       pAnalysis->SetIsShowEdge( !pAnalysis->IsShowEdge() );
       break;      
-    case 'd':   
+    case 'd': // Change to and nonlinear (“ground truth”)
       if( pAnalysis->IsDetail() ){
         pAnalysis->SetIsDetail(false,gui_listner.GetCad(),gui_listner.GetMesh());
       }
@@ -959,7 +1019,8 @@ void myGlutKeyboard(unsigned char key, int x, int y)
         pAnalysis->SetIsDetail(true, gui_listner.GetCad(),gui_listner.GetMesh());        
       }
       break;            
-    case 'p':
+    case 'p': 
+      // Enable | disable the pattern boundary and change the camera to fit on the screen
       is_display_rotation = !is_display_rotation;
       if( is_display_rotation ){
         display_rotation_theta = -10;
@@ -991,8 +1052,11 @@ void myGlutKeyboard(unsigned char key, int x, int y)
   }
 }
 
-
-
+/* 
+ * Set the texture for garments
+ * Read the texture files and apply the properties for garment in 
+ * each windows
+ */
 void Initialize_OpenGL_Texture(int ival)
 {
   //    ReadPPM_SetTexture("cb.ppm");
@@ -1011,6 +1075,7 @@ void Initialize_OpenGL_Texture(int ival)
   if( ival == 0 ){ is_tex_mouse_pos = true; }
   else{ is_tex_mouse_pos = false; }
   
+  // Change the garment in simulation window
   ::glutSetWindow(iwin_sim);
   Com::View::ReadPPM_SetTexture(tex_name.c_str(),
                                 m_texName, m_texWidth,m_texHeight);    
@@ -1023,7 +1088,7 @@ void Initialize_OpenGL_Texture(int ival)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   
-  /////
+  // and the design window
   ::glutSetWindow(iwin_des);
   Com::View::ReadPPM_SetTexture(tex_name.c_str(),
                                 m_texName, m_texWidth,m_texHeight);    
@@ -1065,7 +1130,10 @@ void Initialize_OpenGL_Texture(int ival)
   }  
 }
 
-
+/*
+ * Menu event handler for simulation window
+ * It call the Initialize_OpenGL_Texture function to set new garment properties
+ */
 void myGlutMenu_Sim(int ivalue)
 {
   if( ivalue < 11 ){
@@ -1105,11 +1173,16 @@ void myGlutMenu_Sim(int ivalue)
   }
 }
 
+/*
+ * Main function: 
+ * Init the windows, set the properties of windows
+ * Init the menu
+ * Register event handlers for resize window, mouse, keyboard events
+ */
 int main(int argc, char *argv[])
 {
 	
 	::glutInit(&argc, argv);
-  
 	
 	// left window
 	::glutInitWindowPosition(50,50);
@@ -1191,8 +1264,7 @@ int main(int argc, char *argv[])
     ::glutAttachMenu(GLUT_RIGHT_BUTTON);    
   }
     
-
-  ::SetNewProblem();
+	::SetNewProblem();
   
   Initialize_OpenGL_Texture(4);
 

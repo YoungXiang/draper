@@ -20,7 +20,7 @@
 #if !defined(SURFACE_MESH_READER_H)
 #define SURFACE_MESH_READER_H
 
-#include <string>
+#include <cstring>
 
 class CSurfaceMeshReader
 {
