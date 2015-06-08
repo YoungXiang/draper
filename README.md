@@ -1,7 +1,4 @@
 #DRAPER
-===================
-
-##The Design Window
 ####Main file
 + Initialize the windows (design window & simulation window)
   + Window size, position
