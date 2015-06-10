@@ -883,14 +883,14 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
       clothHandler_.SetRadius(id_l8, 0.09*1.6); 			
 			
 			// collar band
-      clothHandler_.AddClothPiece(id_l9, +0.1*1.6,0.15*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l9, +0.3,+0.15*1.6,+0.2);  
+      clothHandler_.AddClothPiece(id_l9, 0.0,0.15*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l9,-0.38*1.6,-0.15*1.6,0.5);  
       clothHandler_.Transform_Cloth_RotBryantAngle(id_l9, 60, 0, 0);          
 			clothHandler_.SetRadius(id_l9, 0.03*1.6);    
 
 			// // collar
-			clothHandler_.AddClothPiece(id_l10, +0.1*1.6,0.15*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l10, +0.0,+0.15*1.6,+0.3);  
+			clothHandler_.AddClothPiece(id_l10, 0.0,0.15*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l10,-0.38*1.6,-0.25*1.6,+0.5);  
       clothHandler_.Transform_Cloth_RotBryantAngle(id_l10, 60, 0, 0);            
     }
     // ////////
