@@ -120,7 +120,7 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
   slider_deform.Clear();
   aSymIdVPair.clear();
 	
-  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0,id_l5=0,id_l6=0;
+  unsigned int id_l1=0,id_l2=0,id_l3=0,id_l4=0,id_l5=0,id_l6=0,id_l7=0,id_l8=0,id_l9=0,id_l10=0;
   std::vector< std::pair<unsigned int, unsigned int> > aIdECad_Stitch;
   if( inum_problem_ == 5 ){   // for the shirt model
 		Cad::CCadObj2D::CResAddPolygon res1; // 1st - front piece
@@ -318,6 +318,63 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
       cad_2d.PreCompDragPolyline(res6.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6);			
       cad_2d.DragPolyline(res6.aIdE[3],vec_ary[3]*0.4+vec_ary[4]*0.6+Com::CVector2D(0.03,-0.04));
     }   		
+		
+		Cad::CCadObj2D::CResAddPolygon res7;
+    {	// define shape 1st - cuff
+      std::vector<Com::CVector2D> vec_ary;
+      
+			vec_ary.push_back( Com::CVector2D(0.255,-0.32) );  				// 0
+      vec_ary.push_back( Com::CVector2D(0.255 + 0.012,-0.35) );  // 1
+      vec_ary.push_back( Com::CVector2D(0.255 + 0.036,-0.35) );  // 2
+      vec_ary.push_back( Com::CVector2D(0.255 + 0.036,-0.151) ); // 3
+      vec_ary.push_back( Com::CVector2D(0.255 + 0.012,-0.151) ); // 4
+      vec_ary.push_back( Com::CVector2D(0.255,-0.181) );  				// 5
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      res7 = cad_2d.AddPolygon( vec_ary ); 
+    } 
+		Cad::CCadObj2D::CResAddPolygon res8;
+    {	// define shape 2nd - cuff
+      std::vector<Com::CVector2D> vec_ary;
+      
+      vec_ary.push_back( Com::CVector2D(0.11,-0.35) );  
+      vec_ary.push_back( Com::CVector2D(0.11 + 0.024,-0.35) );  
+			vec_ary.push_back( Com::CVector2D(0.11 + 0.036,-0.32) );  				
+      vec_ary.push_back( Com::CVector2D(0.11 + 0.036,-0.181) );  				
+      vec_ary.push_back( Com::CVector2D(0.11 + 0.024,-0.151) ); 
+      vec_ary.push_back( Com::CVector2D(0.11,-0.151) ); 
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      res8 = cad_2d.AddPolygon( vec_ary ); 
+    } 
+		
+		Cad::CCadObj2D::CResAddPolygon res9;
+    {	// define shape collar band
+      std::vector<Com::CVector2D> vec_ary;
+      vec_ary.push_back( Com::CVector2D(0.285,+0.37) );  			  
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.18,+0.37) ); 
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.18,+0.39) );  
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.12,+0.39) );   
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.06,+0.39) );  
+			vec_ary.push_back( Com::CVector2D(0.285,+0.39) );  
+						
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      res9 = cad_2d.AddPolygon( vec_ary ); 
+    } 
+		Cad::CCadObj2D::CResAddPolygon res10;
+    {	// define shape collar
+      std::vector<Com::CVector2D> vec_ary;
+			
+			vec_ary.push_back( Com::CVector2D(0.285,+0.39) );  			  
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.18,+0.39) ); 
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.18,+0.415) );  
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.12,+0.415) );   
+			vec_ary.push_back( Com::CVector2D(0.285 + 0.06,+0.415) );  
+			vec_ary.push_back( Com::CVector2D(0.285,+0.415) );  
+			
+      for(unsigned int ivec=0;ivec<vec_ary.size();ivec++){ vec_ary[ivec] = 1.6*vec_ary[ivec]; }
+      res10 = cad_2d.AddPolygon( vec_ary ); 
+    } 
 	  
 		// Add cad 2d to mesh
     id_l1 = res1.id_l_add;
@@ -326,12 +383,21 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
     id_l4 = res4.id_l_add;
     id_l5 = res5.id_l_add;
 		id_l6 = res6.id_l_add;
+		id_l7 = res7.id_l_add;
+		id_l8 = res8.id_l_add;
+		id_l9 = res9.id_l_add;
+		id_l10 = res10.id_l_add;
+		
     mesh_2d.AddIdLCad_CutMesh(res1.id_l_add);
     mesh_2d.AddIdLCad_CutMesh(res2.id_l_add);    
 		mesh_2d.AddIdLCad_CutMesh(res3.id_l_add);    
     mesh_2d.AddIdLCad_CutMesh(res4.id_l_add);        
     mesh_2d.AddIdLCad_CutMesh(res5.id_l_add);
 		mesh_2d.AddIdLCad_CutMesh(res6.id_l_add);
+		mesh_2d.AddIdLCad_CutMesh(res7.id_l_add);
+		mesh_2d.AddIdLCad_CutMesh(res8.id_l_add);
+		mesh_2d.AddIdLCad_CutMesh(res9.id_l_add);
+		mesh_2d.AddIdLCad_CutMesh(res10.id_l_add);
 		
 		// Mapping pieces together
 		// Map front pieces to back piece
@@ -359,6 +425,18 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 		aIdECad_Stitch.push_back( std::make_pair(res5.aIdE[2],res6.aIdE[1]) );
 		aIdECad_Stitch.push_back( std::make_pair(res5.aIdE[3],res3.aIdE[4]) );
 		aIdECad_Stitch.push_back( std::make_pair(res1.aIdE[4],res6.aIdE[2]) );		
+		
+		// Map cuff to itself
+		aIdECad_Stitch.push_back( std::make_pair(res7.aIdE[1],res7.aIdE[3]) );
+		aIdECad_Stitch.push_back( std::make_pair(res8.aIdE[0],res8.aIdE[4]) );
+		
+		// Map cuff to sleeves
+		aIdECad_Stitch.push_back( std::make_pair(res7.aIdE[2],res4.aIdE[5]) );
+		aIdECad_Stitch.push_back( std::make_pair(res8.aIdE[5],res5.aIdE[5]) );
+		
+		// Map collar band to yoke and front pieces
+		
+		// Map collar to collar band
 		
   } else if( inum_problem_ == 6 ){   
     // The first piece of cloth
@@ -762,13 +840,13 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 			          						
       // left sleeve
       clothHandler_.AddClothPiece(id_l4, +0.1*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l4, -0.4*1.6,+0.0,+0.18*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l4, -0.35*1.6,+0.05,+0.155*1.6);
       clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, -30, 180, 0);          
       clothHandler_.SetRadius(id_l4, 0.09*1.6);    
       // right sleeve
-      clothHandler_.AddClothPiece(id_l5, +0.55,+0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l5, +0.3*1.6,+0.0,+0.18*1.6);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 35, 180, 0);                     
+      clothHandler_.AddClothPiece(id_l5, +0.3*1.6,+0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l5, +0.35*1.6,-0.1,+0.155*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 40, 180, 0);                     
       clothHandler_.SetRadius(id_l5, 0.09*1.6); 
 			
 			// back piece
@@ -779,7 +857,30 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 			// yoke piece
 			clothHandler_.AddClothPiece(id_l6, +0.0,+0.15*1.6);
       clothHandler_.Transform_Cloth_Pan(id_l6, +0.0,-0.15*1.6,+0.1);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l6, 90, 0, 0);      			
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l6, 90, 0, 0);      	
+
+			// left - cuff pieces
+			clothHandler_.AddClothPiece(id_l7, +0.6*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l7, +0.0,+0.05*1.6,+0.2);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l7, 180, 0, 0);          
+      clothHandler_.SetRadius(id_l7, 0.09*1.6);    
+	
+			// right - cuff pieces	
+			clothHandler_.AddClothPiece(id_l8, -0.2*1.6,-0.5*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l8, +0.0,+0.05*1.6,+0.2);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l8, 180, 0, 0);      
+      clothHandler_.SetRadius(id_l8, 0.09*1.6); 			
+			
+			// collar band
+      clothHandler_.AddClothPiece(id_l9, +0.1*1.6,0.15*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l9, +0.0,+0.15*1.6,+0.2);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l9, 60, 0, 0);          
+			clothHandler_.SetRadius(id_l9, 0.03*1.6);    
+
+			// // collar
+			clothHandler_.AddClothPiece(id_l10, +0.1*1.6,0.15*1.6);
+      clothHandler_.Transform_Cloth_Pan(id_l10, +0.0,+0.15*1.6,+0.2);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l10, -50, 0, 0);            
     }
     // ////////
     // const unsigned int is1 = slider_deform.AddSlider("length",0, 0,1);
