@@ -30,10 +30,11 @@ using namespace Fem::Field;
 
 void CClothHandler::Clear()
 {
+	// delete all the cloth pieces
   for(unsigned int ip=0;ip<apPiece.size();ip++){ delete apPiece[ip]; }
   apPiece.clear();
-  this->id_ea_hilight = 0; 
-  this->itype = 0;
+  this->id_ea_hilight = 0;  // remove the highlighter
+  this->itype = 0; // set to default type
   if( pXYZs_ != 0 ){ delete pXYZs_; pXYZs_ = 0; }
   if( aNorm_ != 0 ){ delete aNorm_; aNorm_ = 0; }
   if( aTri_  != 0 ){ delete aTri_;  aTri_  = 0; }
@@ -41,9 +42,11 @@ void CClothHandler::Clear()
   ntri_ = 0;
 }
 
+// Replace the old cloth piece with new one
 void CClothHandler::AddClothPiece(unsigned int id_l_new, unsigned int id_l_old)
 {
   
+	// Find the cloth piece need to replace
   int icp1 = -1;
   for(unsigned int i=0;i<apPiece.size();i++){
     if( apPiece[i]->id_l == id_l_old ){
@@ -53,22 +56,28 @@ void CClothHandler::AddClothPiece(unsigned int id_l_new, unsigned int id_l_old)
   }  
   if( icp1 == -1 ){ return; }
   {
+		// Create new cloth piece to replace
     CClothPiece* cp0 = new CClothPiece;
     CClothPiece* cp1 = apPiece[icp1];
+		// Release the old piece 
     cp0->id_l = id_l_new;
     cp0->id_ea = 0;
+		// Copy the properties from old one to new one
     cp0->cent[0] = cp1->cent[0];
     cp0->cent[1] = cp1->cent[1];
     cp0->p[0] = cp1->p[0];  cp0->p[1] = cp1->p[1];  cp0->p[2] = cp1->p[2];
     cp0->n[0] = cp1->n[0];  cp0->n[1] = cp1->n[1];  cp0->n[2] = cp1->n[2];
     cp0->h[0] = cp1->h[0];  cp0->h[1] = cp1->h[1];  cp0->h[2] = cp1->h[2]; 
     cp0->radius = cp1->radius;
+		// Store new piece id in vector
     apPiece.push_back(cp0);    
   }  
 }
 
+// Add the cloth piece with cent x, cent y
 void CClothHandler::AddClothPiece(unsigned int id_l, double cent_x, double cent_y)
 {
+	// Find the existed cloth piece
   int icp0 = -1;
   for(unsigned int i=0;i<apPiece.size();i++){
     if( apPiece[i]->id_l == id_l ){
@@ -76,6 +85,7 @@ void CClothHandler::AddClothPiece(unsigned int id_l, double cent_x, double cent_
       break;
     }
   }  
+	// not existed, create new one
   if( icp0 == -1 ){    
     CClothPiece* cp = new CClothPiece;
     cp->id_l = id_l;
@@ -90,15 +100,22 @@ void CClothHandler::AddClothPiece(unsigned int id_l, double cent_x, double cent_
     cp->radius = -1;
     apPiece.push_back(cp);    
   }
-  else{
+  else{ // existed, set the cent x, cent y
     CClothPiece* cp = apPiece[icp0];
     cp->cent[0] = cent_x;
     cp->cent[1] = cent_y;
   }
 }
 
+/* 
+ * Change the transformation of cloth piece
+ * anc_x with the x axis
+ * anc_y with the y axis
+ * anc_z with the z axis
+ */
 void CClothHandler::Transform_Cloth_Pan(unsigned int id_l, double anc_x, double anc_y, double anc_z)
 {
+	// Cloth existed?
   int icp0 = -1;
   for(unsigned int i=0;i<apPiece.size();i++){
     if( apPiece[i]->id_l == id_l ){
@@ -107,12 +124,14 @@ void CClothHandler::Transform_Cloth_Pan(unsigned int id_l, double anc_x, double 
     }
   }    
   if( icp0 == -1 ){ return; }
+	// Change the anc
   CClothPiece* cp = apPiece[icp0];
   cp->p[0] = anc_x;
   cp->p[1] = anc_y;
   cp->p[2] = anc_z;    
 }
 
+// Change the cloth piece to the curve-on-surface
 void CClothHandler::SetRadius(unsigned int id_l, double r)
 {
   int icp0 = -1;
@@ -123,10 +142,12 @@ void CClothHandler::SetRadius(unsigned int id_l, double r)
     }
   }    
   if( icp0 == -1 ){ return; }
+	// Make the cloth become the curve-on-surface with r radius
   CClothPiece* cp = apPiece[icp0];
   cp->radius = r;
 }
 
+// The 3D vector
 static void MatVec3(const double m[9], const double x[3], double y[3]){
   y[0] = m[0]*x[0] + m[1]*x[1] + m[2]*x[2];
   y[1] = m[3]*x[0] + m[4]*x[1] + m[5]*x[2];
@@ -139,6 +160,10 @@ static void VecMat3(const double x[3], const double m[9],  double y[3]){
   y[2] = m[2]*x[0] + m[5]*x[1] + m[8]*x[2];
 }
 
+/*
+ * Rotate the cloth with 3 axis x, y, z (phi, theta, psi)
+ * See more: https://www.youtube.com/watch?v=-W4mkUPxxQs
+ */
 void CClothHandler::Transform_Cloth_RotBryantAngle(unsigned int id_l, double phi, double theta, double psi)
 {  
   int icp0 = -1;
@@ -149,11 +174,11 @@ void CClothHandler::Transform_Cloth_RotBryantAngle(unsigned int id_l, double phi
     }
   }    
   if( icp0 == -1 ){ return; }
-  ////
+  //// Change to radian system
   phi   *= 3.1416/180.0;
   theta *= 3.1416/180.0;
   psi   *= 3.1416/180.0;  
-  ////
+  //// 
   const double mat[9] = {
     cos(psi)*cos(theta),	cos(psi)*sin(theta)*sin(phi)-sin(psi)*cos(phi), cos(psi)*sin(theta)*cos(phi)+sin(psi)*sin(phi),
     sin(psi)*cos(theta),	sin(psi)*sin(theta)*sin(phi)+cos(psi)*cos(phi), sin(psi)*sin(theta)*cos(phi)-cos(psi)*sin(phi),
@@ -161,7 +186,7 @@ void CClothHandler::Transform_Cloth_RotBryantAngle(unsigned int id_l, double phi
   ////
   CClothPiece* cp = apPiece[icp0];  
   double res[3];
-  ////
+  //// Set the angles
   MatVec3(mat,cp->n,res);
   cp->n[0] = res[0];
   cp->n[1] = res[1];
@@ -173,12 +198,12 @@ void CClothHandler::Transform_Cloth_RotBryantAngle(unsigned int id_l, double phi
   cp->h[2] = res[2];        
 }
 
-
+// 
 void CClothHandler::BuildClothMeshTopology(unsigned int id_base, unsigned int id_field_disp, const CFieldWorld& world)
 {
   const Fem::Field::CIDConvEAMshCad& conv = world.GetIDConverter(id_base);
   const CField& field = world.GetField(id_field_disp);
-  const CNodeAry::CNodeSeg& ns_c = field.GetNodeSeg(CORNER,false,world);
+  const CNodeAry::CNodeSeg& ns_c = field.GetNodeSeg(CORNER,false,world); 
   const std::vector<unsigned int>& aIdEA = field.GetAryIdEA();
   ////
   for(unsigned int iiea=0;iiea<aIdEA.size();iiea++){
@@ -325,6 +350,7 @@ bool CClothHandler::GetAnchor_2D_Loop(double r[2], unsigned int id_l) const
   
 }
 
+// Move the anchor point by dx, dy
 bool CClothHandler::MoveAnchor_2D(double dx, double dy, unsigned int id_ea)
 {
   for(unsigned int i=0;i<apPiece.size();i++){
@@ -337,6 +363,7 @@ bool CClothHandler::MoveAnchor_2D(double dx, double dy, unsigned int id_ea)
   return false;
 }
 
+// Get the Anchor point
 bool CClothHandler::GetAnchor_3D(double p[3], double n[3], double h[3], unsigned int id_ea) const
 {
   for(unsigned int i=0;i<apPiece.size();i++){
@@ -358,6 +385,7 @@ bool CClothHandler::GetAnchor_3D(double p[3], double n[3], double h[3], unsigned
   return false;  
 }
 
+// Draw the cloth pieces
 void CClothHandler::Draw(unsigned int imode) const
 {
   if(imode == 1 ){
@@ -370,6 +398,7 @@ void CClothHandler::Draw(unsigned int imode) const
     ////
     //  const Fem::Field::CField& field_disp = world.GetField(id_field_disp);
     //  const std::vector<unsigned int>& aIdEA = field_disp.GetAryIdEA();
+		// Iterator through all cloth piece and draw
     for(unsigned int ip=0;ip<apPiece.size();ip++){
       unsigned int id_ea = apPiece[ip]->id_ea;
       double* p = apPiece[ip]->p;
@@ -446,6 +475,7 @@ void CClothHandler::Draw(unsigned int imode) const
   if(  is_texture  ){ ::glEnable(GL_TEXTURE_2D); } 
 }
 
+// Apply the transformation translation 
 void Translate3D(double out[3], 
                  const double in[3],
                  const double trans0[3], const double rot[3], const double trans1[3])
