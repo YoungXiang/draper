@@ -100,7 +100,7 @@ void CClothHandler::AddClothPiece(unsigned int id_l, double cent_x, double cent_
     cp->radius = -1;
     apPiece.push_back(cp);    
   }
-  else{ // existed, move it to the cent x, cent y
+  else{ // existed, set the cent x, cent y
     CClothPiece* cp = apPiece[icp0];
     cp->cent[0] = cent_x;
     cp->cent[1] = cent_y;
