@@ -4,6 +4,7 @@
 + /model/*_cnt.ply: contour file (it helps to determine area around the body to garment fit on it)
 + /texture/*.ppm: garment style files (it define color and pattern of garment)
 + Cloth pieces: defined on analysis2d_cloth_static file (SetModelProblem_Cloth method)
+
 ####Main file
 + Initialize the windows (design window & simulation window)
   + Window size, position
