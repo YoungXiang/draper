@@ -11,7 +11,7 @@
 
 #include "delfem/field_world.h"
 #include "delfem/field.h"
-#include "delfem/FemLs/linearsystem_field.h"
+#include "delfem/femls/linearsystem_field.h"
 #include "delfem/linearsystem_interface_eqnsys.h"
 #include "delfem/matvec/matdia_blkcrs.h"
 #include "delfem/matvec/vector_blk.h"

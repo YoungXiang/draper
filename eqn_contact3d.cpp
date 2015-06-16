@@ -10,12 +10,12 @@
 #include <math.h>
 
 
-#include "delfem/include/delfem/field_world.h"
-#include "delfem/include/delfem/field.h"
-#include "delfem/include/delfem/femls/linearsystem_field.h"
-#include "delfem/include/delfem/matvec/matdia_blkcrs.h"
-#include "delfem/include/delfem/matvec/vector_blk.h"
-#include "delfem/include/delfem/vector3d.h"
+#include "delfem/field_world.h"
+#include "delfem/field.h"
+#include "delfem/femls/linearsystem_field.h"
+#include "delfem/matvec/matdia_blkcrs.h"
+#include "delfem/matvec/vector_blk.h"
+#include "delfem/vector3d.h"
 
 #include "eqn_contact3d.h"
 #include "contact_target.h"
