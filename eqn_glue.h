@@ -9,7 +9,7 @@
  *  Copyright 2010 The University of Tokyo. All rights reserved.
  *
  */
-#include "delfem/FemLs/linearsystem_field.h"
+#include "delfem/femls/linearsystem_field.h"
 
 bool AddLinSys_Glue_Lagrange_NewmarkBeta
 (double dt, double gamma_newmark, double beta_newmark,

@@ -78,7 +78,7 @@ CFieldWorld::CFieldWorld(const CFieldWorld& world)
       const unsigned int id_field = aIdField[iifd];
       const CField& fd = world.GetField(id_field);
       CField* pField = new CField(fd);
-//      std::cout << "copy" << pField->IsNodeSeg(CORNER,false,world) << std::endl;
+      std::cout << "copy" << pField->IsNodeSeg(CORNER,false,world) << std::endl;
       this->m_apField.AddObj(std::make_pair(id_field,pField));
     }        
   }  
@@ -332,7 +332,6 @@ unsigned int CFieldWorld::AddMesh(const Msh::IMesh& mesh)
 		assert( tmp_id == id_na );
 	}
   std::cout << id_na << " " << id_ns_co << std::endl;
-  
 	unsigned int max_id_msh;
 	{	// 要素IDの最大値を求める
 		max_id_msh = 0;
@@ -1192,7 +1191,7 @@ unsigned int CFieldWorld::GetPartialField(unsigned int id_field_val,
 										  std::vector<unsigned int> id_ea_ary)
 {
     if( id_ea_ary.size() == 0 ) return 0;
-//	std::cout << "GetPartialField" << std::endl;
+	std::cout << "GetPartialField" << std::endl;
 	for(unsigned int iid_ea=0;iid_ea<id_ea_ary.size();iid_ea++){
 		unsigned int id_ea = id_ea_ary[iid_ea];
 		if( !this->IsIdEA(id_ea) ){	return 0; }
@@ -1328,7 +1327,7 @@ void InsertIdToSetSet(std::map<unsigned int, std::set<unsigned int> >& mapset, u
 // Delete Field and referenced EA and NA. the EAs and NAs that is referenced from Field in use are not deleted
 void CFieldWorld::DeleteField( const std::vector<unsigned int>& aIdFieldDel )
 {
-//  std::cout << "delete field" << std::endl;
+  std::cout << "delete field" << std::endl;
   std::vector<unsigned int> aIdField_InUse;
   {
     const std::vector<unsigned int>& aIdField = this->m_apField.GetAry_ObjID();  
@@ -1350,7 +1349,7 @@ void CFieldWorld::DeleteField( const std::vector<unsigned int>& aIdFieldDel )
   mapsetID EaEs_InUse, NaNs_InUse;
   for(unsigned int iidf_use=0;iidf_use<aIdField_InUse.size();iidf_use++){
     unsigned int id_field_use = aIdField_InUse[iidf_use];
-//    std::cout << "Id Field In Use : " << id_field_use << std::endl;
+    std::cout << "Id Field In Use : " << id_field_use << std::endl;
     const CField& field = this->GetField(id_field_use);
     {
       const Fem::Field::CField::CNodeSegInNodeAry& nans = field.GetNodeSegInNodeAry(CORNER);
@@ -1378,21 +1377,21 @@ void CFieldWorld::DeleteField( const std::vector<unsigned int>& aIdFieldDel )
 
   for(mapsetID::iterator itr=NaNs_InUse.begin();itr!=NaNs_InUse.end();itr++){
     unsigned int id_na = itr->first;
-//    std::cout << "Id NA in use" << id_na << "  NS : ";
+    std::cout << "Id NA in use" << id_na << "  NS : ";
     const std::set<unsigned int>& setID = itr->second;
     for(std::set<unsigned int>::iterator itrID=setID.begin();itrID!=setID.end();itrID++){
-//      std::cout << *itrID << " ";
+      std::cout << *itrID << " ";
     }
 //    std::cout << std::endl;
   }
   for(mapsetID::iterator itr=EaEs_InUse.begin();itr!=EaEs_InUse.end();itr++){
     unsigned int id_ea = itr->first;
-//    std::cout << "Id EA in use" << id_ea << "  ES : ";
+    std::cout << "Id EA in use" << id_ea << "  ES : ";
     const std::set<unsigned int>& setID = itr->second;
     for(std::set<unsigned int>::iterator itrID=setID.begin();itrID!=setID.end();itrID++){
-//      std::cout << *itrID << " ";
+      std::cout << *itrID << " ";
     }
-//    std::cout << std::endl;
+    std::cout << std::endl;
   }  
   {
     std::vector<unsigned int> aIdNA = this->m_apNA.GetAry_ObjID();
