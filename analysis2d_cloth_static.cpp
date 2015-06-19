@@ -817,8 +817,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
     //    obj_mesh.Load_Ply("../model/kid_15k.ply");    
     CSurfaceMeshReader cnt_mesh;  
     {
-      obj_mesh.Load_Ply("models/man_15k.ply");         
-      cnt_mesh.Load_Ply("models/man_cnt.ply");    
+      obj_mesh.Load_Ply("models/david.ply");         
+      cnt_mesh.Load_Ply("models/david_cnt.ply");    
     }
     //    cnt_mesh.Load_Ply("../model/kid_cnt.ply");
     double c[3],w[3]; obj_mesh.GetCenterWidth(c[0],c[1],c[2], w[0],w[1],w[2]);    
@@ -828,7 +828,7 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
       obj_mesh.Translate(-c[0],-c[1],-c[2]);  obj_mesh.Scale(scale);  obj_mesh.Rot_Bryant(90,0,180);
       cnt_mesh.Translate(-c[0],-c[1],-c[2]);  cnt_mesh.Scale(scale);  cnt_mesh.Rot_Bryant(90,0,180);          
       double c[3],w[3]; obj_mesh.GetCenterWidth(c[0],c[1],c[2], w[0],w[1],w[2]); 
-      std::cout << "Scaled Armadillo " << " " << w[0] << " " << w[1] << " " << w[2] << std::endl;
+      std::cout << "Scaled Model " << " " << w[0] << " " << w[1] << " " << w[2] << std::endl;
     }
     ////
     std::vector<unsigned int> aTri;
