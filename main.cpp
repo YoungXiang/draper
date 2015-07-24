@@ -140,7 +140,7 @@ void ShowTextDesign()
     }
   }  
   {
-    strcpy(s_tmp,"Pan : Shift+Left drag,  Zoom : Page Up/Down");
+    strcpy(s_tmp,"Pan : Shift+Left drag,  Zoom : Arrow Up/Down");
     ::glColor3d(0.0, 0.0, 1.0);
     RenderBitmapString(10,60, pFont, s_tmp);            
   } 
@@ -211,7 +211,7 @@ void ShowTextSimulation()
   ::glDisable(GL_LIGHTING);
   char s_tmp[256];
   {
-    strcpy(s_tmp,"Pan : Shift+Left drag,  Zoom : Page Up/Down");
+    strcpy(s_tmp,"Pan : Shift+Left drag,  Zoom : Arrow Up/Down");
     ::glColor3d(0.0, 0.0, 1.0);
     RenderBitmapString(10,15, pFont, s_tmp);            
   }
@@ -840,13 +840,13 @@ void myGlutSpecial(int Key, int x, int y)
 	Com::View::CCamera& camera = (glutGetWindow()==iwin_sim) ? camera_r : camera_l;
 	switch(Key)
 	{
-	case GLUT_KEY_PAGE_UP: // zoom in
+	case GLUT_KEY_UP: // zoom in
 		{
 			const double tmp_scale = camera.GetScale() * 1.111;
 			camera.SetScale( tmp_scale );
 		}
 		break;
-	case GLUT_KEY_PAGE_DOWN: // zoom out 
+	case GLUT_KEY_DOWN: // zoom out 
 		{
 			const double tmp_scale = camera.GetScale() * 0.9;
 			camera.SetScale( tmp_scale );
