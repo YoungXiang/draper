@@ -20,6 +20,14 @@
 
 #include <memory>
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <complex>
+#include <cmath>
+#include "pdf/pdf.h"
+
 #include "delfem/femls/zsolver_ls_iter.h"
 #include "delfem/field_world.h"
 #include "delfem/field.h"
@@ -817,8 +825,8 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
     //    obj_mesh.Load_Ply("../model/kid_15k.ply");    
     CSurfaceMeshReader cnt_mesh;  
     {
-      obj_mesh.Load_Ply("models/david.ply");         
-      cnt_mesh.Load_Ply("models/david_cnt.ply");    
+      obj_mesh.Load_Ply("models/hispanic.ply");         
+      cnt_mesh.Load_Ply("models/hispanic_cnt.ply");    
     }
     //    cnt_mesh.Load_Ply("../model/kid_cnt.ply");
     double c[3],w[3]; obj_mesh.GetCenterWidth(c[0],c[1],c[2], w[0],w[1],w[2]);    
@@ -872,13 +880,13 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 			          						
       // left sleeve
       clothHandler_.AddClothPiece(id_l4, +0.1*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l4, -0.35*1.6,+0.1,+0.155*1.6);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, -40, 180, 0);          
+      clothHandler_.Transform_Cloth_Pan(id_l4, -0.04*1.6,+0.1,+0.025*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l4, -40, 110, 0);          
       clothHandler_.SetRadius(id_l4, 0.09*1.6);    
       // right sleeve
       clothHandler_.AddClothPiece(id_l5, +0.3*1.6,+0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l5, +0.35*1.6,-0.1,+0.155*1.6);
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 50, 180, 0);                     
+      clothHandler_.Transform_Cloth_Pan(id_l5, +0.055*1.6,-0.1,+0.025*1.6);
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l5, 50, 250, 0);                     
       clothHandler_.SetRadius(id_l5, 0.09*1.6); 
 			
 			// back piece
@@ -893,14 +901,14 @@ void CAnalysis2D_Cloth_Static::SetModelProblem_Cloth
 
 			// left - cuff pieces
 			clothHandler_.AddClothPiece(id_l7, +0.6*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l7, +0.0,+0.05*1.6,+0.2);  
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l7, 180, 0, 0);          
+      clothHandler_.Transform_Cloth_Pan(id_l7, 0.08,+0.05*1.6,+0.45);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l7, 180, -70, 0);          
       clothHandler_.SetRadius(id_l7, 0.09*1.6);    
 	
 			// right - cuff pieces	
 			clothHandler_.AddClothPiece(id_l8, -0.2*1.6,-0.5*1.6);
-      clothHandler_.Transform_Cloth_Pan(id_l8, +0.0,+0.05*1.6,+0.2);  
-      clothHandler_.Transform_Cloth_RotBryantAngle(id_l8, 180, 0, 0);      
+      clothHandler_.Transform_Cloth_Pan(id_l8, -0.05,+0.05*1.6,+0.45);  
+      clothHandler_.Transform_Cloth_RotBryantAngle(id_l8, 180, 70, 0);      
       clothHandler_.SetRadius(id_l8, 0.09*1.6); 			
 			
 			// collar band
